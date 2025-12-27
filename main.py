@@ -67,12 +67,27 @@ async def on_message(message):
         # Remove the mention from the content to get the actual user message
         user_message = message.content.replace(f"<@{bot.user.id}>", "").strip()
         
-        # Construct the prompt
-        # KoboldCPP usually handles raw completion. We need to structure it like a chat or just raw continuation.
-        # Since we are using a roast persona, let's treat it as a chat or instruction.
-        # Simple format: System Prompt + User Query + AI Response Start
-        
-        full_prompt = f"{ROAST_PROMPT}\n\nUser: {user_message}\nAI:"
+        # Fetch the last 10 messages from the channel history
+        history = []
+        async for msg in message.channel.history(limit=10):
+            # Skip the command message itself and empty messages
+            if msg.id == message.id or not msg.content:
+                continue
+            
+            author_name = msg.author.display_name
+            history.append(f"{author_name}: {msg.content}")
+
+        # Reverse to get chronological order
+        history_text = "\n".join(reversed(history))
+
+        # Construct the prompt with history
+        full_prompt = (
+            f"{ROAST_PROMPT}\n\n"
+            f"History:\n{history_text}\n\n"
+            f"Current Chat:\n"
+            f"{message.author.display_name}: {user_message}\n"
+            f"AI:"
+        )
         
         async with message.channel.typing():
             response = await generate_response(full_prompt)
