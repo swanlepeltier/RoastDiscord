@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  roast-bot:
+    build: .
+    container_name: roast-bot
+    network_mode: "host"
+    environment:
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
+    restart: unless-stopped
+    volumes:
+      - ./main.py:/app/main.py
+      - ./roast.txt:/app/roast.txt

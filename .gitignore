@@ -1,2 +1,4 @@
 *.txt
 *.gguf
+!roast.txt
+.env
