@@ -33,6 +33,7 @@ async def generate_response(prompt):
         "temperature": 0.8,
         "top_p": 0.9,
         "rep_pen": 1.1,
+        "stop_sequence": ["User:", "\nUser ", "User", "\n\n"],
     }
     
     async with aiohttp.ClientSession() as session:
