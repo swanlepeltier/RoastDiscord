@@ -28,7 +28,7 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 async def generate_response(prompt):
     payload = {
         "prompt": prompt,
-        "max_context_length": 2048,
+        "max_context_length": 8192,
         "max_length": 150,
         "temperature": 0.8,
         "top_p": 0.9,
@@ -68,9 +68,9 @@ async def on_message(message):
         # Remove the mention from the content to get the actual user message
         user_message = message.content.replace(f"<@{bot.user.id}>", "").strip()
         
-        # Fetch the last 10 messages from the channel history
+        # Fetch the last 30 messages from the channel history
         history = []
-        async for msg in message.channel.history(limit=10):
+        async for msg in message.channel.history(limit=30):
             # Skip the command message itself and empty messages
             if msg.id == message.id or not msg.content:
                 continue
